@@ -1,0 +1,10 @@
+{
+  "ngrok": {
+    "api_key": "what_a_long_key",
+    "update_min_interval": 60
+  },
+  "paw": {
+    "username": "what_a_brief_name",
+    "auth_token": "what_a_complex_token"
+  }
+}

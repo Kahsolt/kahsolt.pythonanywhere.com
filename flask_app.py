@@ -4,12 +4,13 @@
 # Update Time: 2022/10/10
 
 import os
-import traceback
 
 from flask import Flask
 from flask import redirect, abort
 
 from config import *
+from modules import ngrok_stat as ngrok
+
 
 app = Flask(__name__)
 
@@ -20,18 +21,39 @@ def index():
     return fh.read().strip()
 
 
-@app.route('/stable-diffusion-webui-lite')
-def stable_diffusion_webui_lite():
-    return redirect('https://985a-183-192-109-11.jp.ngrok.io')
-
-
 @app.route('/a-puzzle-a-day-ext')
 def a_puzzle_a_day_ext():
-  try:
-    with open(os.path.join(HTML_PATH, 'a-puzzle-a-day-ext.html'), 'r', encoding='utf-8') as fh:
-      return fh.read().strip()
-  except:
-    return traceback.format_exc()
+  with open(os.path.join(HTML_PATH, 'a-puzzle-a-day-ext.html'), 'r', encoding='utf-8') as fh:
+    return fh.read().strip()
+
+
+@app.route('/stable-diffusion-webui-lite')
+def stable_diffusion_webui_lite():
+  return redirect('/ngrok/site')
+
+
+@app.route('/ngrok/site')
+def ngrok_site():
+  ngrok.update_ngrok_info()
+
+  public_urls = ngrok.get_ngrok_public_urls()
+  if len(public_urls) == 0:
+    return '<p> No ngrok public tunnels found, check the status info: <a href="/ngrok/status">Ngrok Debug</a> </p>'
+  elif len(public_urls) == 1:
+    return redirect(public_urls[0])
+  else:
+    return '<ul>{}</ul>'.format('\n'.join([f'<li><a href="{url}">{url}</a></li>' for url in public_urls]))
+
+@app.route('/ngrok/status')
+def ngrok_status():
+  html = '<div><a href="/ngrok/refresh">Force Refresh State!!</a></div>\n'
+  html += ngrok.format_ngrok_info_html()
+  return html
+
+@app.route('/ngrok/refresh')
+def ngrok_refresh():
+  ngrok.update_ngrok_info(hayaku=True)
+  return redirect('/ngrok/status')
 
 
 @app.route('/debug')
