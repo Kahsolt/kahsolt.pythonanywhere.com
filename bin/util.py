@@ -82,7 +82,7 @@ def robocopy(src:str, dst:str, sess_opt:str=None) -> str:
   else:
     opt = sess_opt
     if not opt:               # ask for action if opt is None
-      print(f'[robocopy] dst {dst!r} already exists, overwrite?')
+      print(f'[robocopy] dst {dst!r} already exists, merge & overwrite?')
       while opt not in ['y', 'n', 'a', 'yes', 'no', 'abort', 'ya', 'na']:
         print(f'>> [Y] yes / [N] no / [YA] yes to all / [NA] no to all / [A] abort: ', end='')
         opt = input().lower()
@@ -96,8 +96,7 @@ def robocopy(src:str, dst:str, sess_opt:str=None) -> str:
         os.unlink(dst)
         sh.copy(src, dst)
       else:
-        sh.rmtree(dst)
-        sh.copytree(src, dst)
+        sh.copytree(src, dst, dirs_exist_ok=True)
     elif opt in ['n', 'no', 'na']:
       print(f'[robocopy] ignore {src}')
     elif opt in ['a', 'abort']:

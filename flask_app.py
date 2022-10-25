@@ -6,7 +6,7 @@
 import os
 
 from flask import Flask
-from flask import redirect, abort
+from flask import redirect, send_file
 
 from config import *
 from modules import ngrok_stat as ngrok
@@ -17,14 +17,17 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-  with open(os.path.join(BASE_PATH, 'index.html'), 'r', encoding='utf-8') as fh:
-    return fh.read().strip()
+  return send_file(os.path.join(BASE_PATH, 'index.html'))
+
+
+@app.route('/hana-tap')
+def hana_tap():
+  return send_file(os.path.join(HTML_PATH, 'hana-tap.html'))
 
 
 @app.route('/a-puzzle-a-day-ext')
 def a_puzzle_a_day_ext():
-  with open(os.path.join(HTML_PATH, 'a-puzzle-a-day-ext.html'), 'r', encoding='utf-8') as fh:
-    return fh.read().strip()
+  return send_file(os.path.join(HTML_PATH, 'a-puzzle-a-day-ext.html'))
 
 
 @app.route('/stable-diffusion-webui-lite')

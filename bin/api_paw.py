@@ -22,6 +22,7 @@ TOKEN = os.environ.get('TOKEN', TOKEN)       # allow override
 
 HEADERS = { 'Authorization': f'Token {TOKEN}' }
 API_BASE = f'https://www.pythonanywhere.com/api/v0/user/{USER}'
+DOMAIN_NAME = 'kahsolt.pythonanywhere.com'
 
 
 def GET(ep):
@@ -82,7 +83,7 @@ def api_webapps(args):
     GET|POST                /api/v0/user/{username}/webapps/{domain_name}/static_headers/
     GET|PUT|PATCH|DELETE    /api/v0/user/{username}/webapps/{domain_name}/static_headers/{id}/
     '''
-    return GET('/webapps')
+    return POST(f'/webapps/{DOMAIN_NAME}/reload/')
 
 
 def api_system_image(args):
